@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Mlkit_Camera_App</string>
+    <string name="Start_scan_button_text">Start</string>
+
+</resources>
