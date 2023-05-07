@@ -4,10 +4,7 @@ import android.app.Activity
 import android.os.Bundle
 import android.os.PersistableBundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.camera.core.CameraProvider
-import androidx.camera.core.CameraSelector
-import androidx.camera.core.ImageAnalysis
-import androidx.camera.core.Preview
+import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
@@ -15,6 +12,7 @@ import com.google.common.util.concurrent.ListenableFuture
 import com.nikita.mlkit_camera_app.Helpers.FrameAnalyzer
 import com.nikita.mlkit_camera_app.R
 
+@ExperimentalGetImage
 class CameraScanActivity: AppCompatActivity() {
     private lateinit var cameraFuture: ListenableFuture<ProcessCameraProvider>
 
@@ -45,7 +43,8 @@ class CameraScanActivity: AppCompatActivity() {
         val imageAnalysis = ImageAnalysis.Builder()
             .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
             .build()
-        imageAnalysis.setAnalyzer(mainExecutor, FrameAnalyzer())
+         val viewPoint = findViewById<LandMarkView>(R.id.landMarkView)
+        imageAnalysis.setAnalyzer(mainExecutor, FrameAnalyzer(viewPoint))
 
 
         cameraProvider.bindToLifecycle(this, cameraselector, preview, imageAnalysis)
