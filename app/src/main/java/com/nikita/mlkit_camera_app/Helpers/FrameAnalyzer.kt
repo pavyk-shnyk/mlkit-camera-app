@@ -1,5 +1,7 @@
 package com.nikita.mlkit_camera_app.Helpers
 
+import android.media.Image
+import android.util.Size
 import androidx.camera.core.ExperimentalGetImage
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
@@ -9,6 +11,9 @@ import com.google.mlkit.vision.pose.PoseDetection
 import com.google.mlkit.vision.pose.PoseDetector
 import com.google.mlkit.vision.pose.defaults.PoseDetectorOptions
 import com.nikita.mlkit_camera_app.cameraFeature.LandMarkView
+import java.lang.Integer.min
+import java.lang.Integer.max
+
 
 @ExperimentalGetImage
 class FrameAnalyzer(
@@ -28,12 +33,18 @@ class FrameAnalyzer(
            val imageForDetector = InputImage.fromMediaImage(mediaImage, image.imageInfo.rotationDegrees)
             detection.process(imageForDetector)
                 .addOnSuccessListener {resultPose ->
-                    viewPoint.SetParameters(resultPose)
+                    val size = Size(
+                        min(image.width, image.height),
+                        max(image.width, image.height)
+
+                    )
+                    viewPoint.SetParameters(resultPose, size)
+                    image.close()
                 }
                 .addOnFailureListener{
                     println("NE UDALOS RASPOZNAT")
+                    image.close()
                 }
         }
-        image.close()
     }
 }
