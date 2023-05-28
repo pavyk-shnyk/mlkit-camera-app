@@ -34,6 +34,17 @@ class LandMarkView(
 
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
+        DrowPoints(canvas)
+        DrowLines(canvas)
+    }
+
+    fun SetParameters(pose: Pose, sourceSize: Size){
+        detectorPose = pose
+        sizeSource = sourceSize
+        invalidate()
+    }
+
+    private fun DrowPoints(canvas: Canvas?){
 
         var landmark = detectorPose?.getPoseLandmark(PoseLandmark.NOSE)
         if(landmark != null){
@@ -115,15 +126,49 @@ class LandMarkView(
         }
     }
 
-    fun SetParameters(pose: Pose, sourceSize: Size){
-        detectorPose = pose
-        sizeSource = sourceSize
-        invalidate()
-    }
-
     private fun DrawLendMark(landMark: PoseLandmark, drawCanvas: Canvas? ){
         val position = ConvertPoint(landMark.position3D)
         drawCanvas?.drawCircle(position.x, position.y, 20f, mainPaint)
+    }
+
+    private  fun DrowLines(canvas: Canvas?){
+        var landmark1 = detectorPose?.getPoseLandmark(PoseLandmark.LEFT_SHOULDER)
+        var landmark2 = detectorPose?.getPoseLandmark(PoseLandmark.LEFT_ELBOW)
+        if(landmark1 != null && landmark2 != null){
+            DrawLine(canvas, landmark1.position3D, landmark2.position3D)
+        }
+        landmark1 = detectorPose?.getPoseLandmark(PoseLandmark.RIGHT_ELBOW)
+        landmark2 = detectorPose?.getPoseLandmark(PoseLandmark.RIGHT_SHOULDER)
+        if(landmark1 != null && landmark2 != null){
+            DrawLine(canvas, landmark1.position3D, landmark2.position3D)
+        }
+        landmark1 = detectorPose?.getPoseLandmark(PoseLandmark.LEFT_ELBOW)
+        landmark2 = detectorPose?.getPoseLandmark(PoseLandmark.LEFT_WRIST)
+        if(landmark1 != null && landmark2 != null){
+            DrawLine(canvas, landmark1.position3D, landmark2.position3D)
+        }
+        landmark1 = detectorPose?.getPoseLandmark(PoseLandmark.RIGHT_ELBOW)
+        landmark2 = detectorPose?.getPoseLandmark(PoseLandmark.RIGHT_WRIST)
+        if(landmark1 != null && landmark2 != null){
+            DrawLine(canvas, landmark1.position3D, landmark2.position3D)
+        }
+        landmark1 = detectorPose?.getPoseLandmark(PoseLandmark.RIGHT_SHOULDER)
+        landmark2 = detectorPose?.getPoseLandmark(PoseLandmark.LEFT_SHOULDER)
+        if(landmark1 != null && landmark2 != null){
+            DrawLine(canvas, landmark1.position3D, landmark2.position3D)
+        }
+        landmark1 = detectorPose?.getPoseLandmark(PoseLandmark.LEFT_MOUTH)
+        landmark2 = detectorPose?.getPoseLandmark(PoseLandmark.RIGHT_MOUTH)
+        if(landmark1 != null && landmark2 != null){
+            DrawLine(canvas, landmark1.position3D, landmark2.position3D)
+        }
+
+    }
+
+    private fun DrawLine(canvas: Canvas?, firstPoint: PointF3D, secondPoint: PointF3D){
+        val start = ConvertPoint(firstPoint)
+        val end = ConvertPoint(secondPoint)
+        canvas?.drawLine(start.x, start.y, end.x, end.y ,mainPaint)
     }
 
     private fun ConvertPoint(target:PointF3D,):PointF{
